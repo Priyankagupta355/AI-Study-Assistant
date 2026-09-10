@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+pydantic-settings
+groq
+langchain
+langchain-groq
+langchain-community
+chromadb
+sentence-transformers
+pypdf
+python-multipart
+streamlit
+requests
