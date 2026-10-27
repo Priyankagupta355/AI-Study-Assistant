@@ -10,8 +10,7 @@ def ask_documents(
 
     results = search_documents(
         query=question,
-        top_k=top_k,
-        max_distance=1.2
+        top_k=top_k
     )
 
     # No relevant information in uploaded notes

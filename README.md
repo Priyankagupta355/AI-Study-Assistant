@@ -7,39 +7,46 @@ The application helps students interact with study materials, practice questions
 ## ✨ Features
 
 ### 💬 PDF Question Answering
+
 Ask questions about uploaded PDF study materials and get AI-generated responses based on the available document context.
 
 ### 👨‍🏫 AI Tutor
+
 Get learning assistance and explanations through an AI-powered tutoring experience.
 
 ### 📝 AI Quiz Generator
+
 Generate practice quizzes to revise concepts and test your understanding.
 
 ### 📅 AI Study Planner
+
 Use AI-assisted planning features to organize your study activities.
 
 ### 🔄 Revision Assistant
+
 Get support for revising concepts and preparing for assessments.
 
 ### 🤖 Multi-Agent AI Router
+
 Route requests to appropriate AI workflows based on the task, supporting different learning activities.
 
 ### 📊 Study Progress Tracking
+
 Track study-related progress through the application's progress-tracking functionality.
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Python | Core application development |
-| FastAPI | Backend API development |
-| Groq LLM | Language model integration |
-| LangChain | LLM application components |
-| ChromaDB | Vector storage for retrieval |
-| Sentence Transformers | Text embeddings |
-| SQLite | Database storage |
-| SQLAlchemy | Database interaction |
-| Streamlit | User interface |
+| Technology            | Purpose                      |
+| --------------------- | ---------------------------- |
+| Python                | Core application development |
+| FastAPI               | Backend API development      |
+| Groq LLM              | Language model integration   |
+| LangChain             | LLM application components   |
+| ChromaDB              | Vector storage for retrieval |
+| Sentence Transformers | Text embeddings              |
+| SQLite                | Database storage             |
+| SQLAlchemy            | Database interaction         |
+| Streamlit             | User interface               |
 
 ## 🧠 Architecture
 
@@ -147,15 +154,58 @@ CHROMA_DB_PATH=./data/chroma_db
 
 Replace `your_groq_api_key` with your own API key.
 
+<<<<<<< Updated upstream
 **Important:** Never commit your actual API key to GitHub. Keep `.env` excluded through `.gitignore`.
 
 ### 5. Run the Backend
+
+=======
+Start the backend first in one terminal:
+
+>>>>>>> Stashed changes
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
+
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+
+**Important:** Never commit your actual API key to GitHub. Keep `.env` excluded through `.gitignore`.
+
+### 5. Run the Backend
+
+Start the backend first in one terminal:
 
 ```bash
 python -m uvicorn app.main:app --reload
 ```
 
 The backend should be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### 6. Run the Frontend
+
+Open a second terminal, activate the same virtual environment, and run:
+
+```bash
+streamlit run frontend/streamlit_app.py
+```
+
+If any command fails, verify the project structure, installed dependencies, environment variables, and the relevant entry-point file.
 
 ```text
 http://127.0.0.1:8000

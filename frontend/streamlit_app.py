@@ -5,6 +5,27 @@ import requests
 API_URL = "http://127.0.0.1:8000"
 
 
+def api_request(method, endpoint, **kwargs):
+    try:
+        return requests.request(
+            method,
+            f"{API_URL}{endpoint}",
+            timeout=(5, 120),
+            **kwargs
+        )
+    except requests.exceptions.ConnectionError:
+        st.error(
+            "Cannot connect to the study assistant API. "
+            "Start the backend in a separate terminal with "
+            "`python -m uvicorn app.main:app --reload`, then try again."
+        )
+    except requests.exceptions.Timeout:
+        st.error("The API request timed out. Please try again.")
+    except requests.exceptions.RequestException as exc:
+        st.error(f"API request failed: {exc}")
+    return None
+
+
 st.set_page_config(
     page_title="AI Personal Study Assistant",
     page_icon="📚",
@@ -39,6 +60,38 @@ if page == "💬 Ask Your Notes":
 
     st.header("Ask Your Notes")
 
+    st.subheader("Upload a PDF")
+    uploaded_pdf = st.file_uploader(
+        "Choose a PDF to add to your notes",
+        type=["pdf"],
+        key="notes_pdf_upload",
+    )
+
+    if st.button("Upload PDF", disabled=uploaded_pdf is None):
+        if uploaded_pdf is not None:
+            response = api_request(
+                "POST",
+                "/documents/upload",
+                files={
+                    "file": (
+                        uploaded_pdf.name,
+                        uploaded_pdf.getvalue(),
+                        "application/pdf",
+                    )
+                },
+            )
+
+            if response is not None and response.status_code == 200:
+                data = response.json()
+                st.success(
+                    f"Uploaded and indexed {data['filename']} "
+                    f"({data['stored_chunks']} chunks)."
+                )
+            elif response is not None:
+                st.error(f"Upload failed: {response.text}")
+
+    st.divider()
+
     question = st.text_input(
         "Ask a question about your uploaded notes"
     )
@@ -49,14 +102,15 @@ if page == "💬 Ask Your Notes":
             st.warning("Please enter a question.")
         else:
 
-            response = requests.post(
-                f"{API_URL}/chat",
+            response = api_request(
+                "POST",
+                "/chat",
                 json={
                     "message": question
                 }
             )
 
-            if response.status_code == 200:
+            if response is not None and response.status_code == 200:
 
                 data = response.json()
 
@@ -72,8 +126,14 @@ if page == "💬 Ask Your Notes":
                             f"📄 {source['filename']} "
                             f"(Chunk {source['chunk_index']})"
                         )
+                else:
+                    st.warning(
+                        "No matching content was retrieved from your notes. "
+                        "Check that the PDF upload completed successfully "
+                        "and try a more specific question."
+                    )
 
-            else:
+            elif response is not None:
                 st.error(
                     f"Error: {response.text}"
                 )
@@ -93,14 +153,15 @@ elif page == "👨‍🏫 AI Tutor":
             st.warning("Please enter a topic.")
         else:
 
-            response = requests.post(
-                f"{API_URL}/tutor",
+            response = api_request(
+                "POST",
+                "/tutor",
                 json={
                     "question": question
                 }
             )
 
-            if response.status_code == 200:
+            if response is not None and response.status_code == 200:
 
                 data = response.json()
 
@@ -108,7 +169,7 @@ elif page == "👨‍🏫 AI Tutor":
 
                 st.write(data["answer"])
 
-            else:
+            elif response is not None:
                 st.error(
                     f"Error: {response.text}"
                 )
@@ -135,15 +196,16 @@ elif page == "📝 Quiz":
             st.warning("Please enter a topic.")
         else:
 
-            response = requests.post(
-                f"{API_URL}/quiz",
+            response = api_request(
+                "POST",
+                "/quiz",
                 json={
                     "topic": topic,
                     "num_questions": num_questions
                 }
             )
 
-            if response.status_code == 200:
+            if response is not None and response.status_code == 200:
 
                 data = response.json()
 
@@ -151,7 +213,7 @@ elif page == "📝 Quiz":
 
                 st.success("Quiz generated!")
 
-            else:
+            elif response is not None:
                 st.error(
                     f"Error: {response.text}"
                 )
@@ -241,8 +303,9 @@ elif page == "📅 Study Planner":
                 for subject in subjects.split(",")
             ]
 
-            response = requests.post(
-                f"{API_URL}/planner",
+            response = api_request(
+                "POST",
+                "/planner",
                 json={
                     "subjects": subject_list,
                     "days": days,
@@ -250,7 +313,7 @@ elif page == "📅 Study Planner":
                 }
             )
 
-            if response.status_code == 200:
+            if response is not None and response.status_code == 200:
 
                 data = response.json()
 
@@ -258,7 +321,7 @@ elif page == "📅 Study Planner":
 
                 st.json(data)
 
-            else:
+            elif response is not None:
                 st.error(
                     f"Error: {response.text}"
                 )
@@ -278,14 +341,15 @@ elif page == "🔄 Revision":
             st.warning("Please enter a topic.")
         else:
 
-            response = requests.post(
-                f"{API_URL}/revision",
+            response = api_request(
+                "POST",
+                "/revision",
                 json={
                     "topic": topic
                 }
             )
 
-            if response.status_code == 200:
+            if response is not None and response.status_code == 200:
 
                 data = response.json()
 
@@ -305,7 +369,7 @@ elif page == "🔄 Revision":
                 ]:
                     st.write(f"❓ {question}")
 
-            else:
+            elif response is not None:
                 st.error(
                     f"Error: {response.text}"
                 )
@@ -315,11 +379,12 @@ elif page == "📊 Progress":
 
     st.header("Progress Dashboard")
 
-    response = requests.get(
-        f"{API_URL}/progress/summary"
+    response = api_request(
+        "GET",
+        "/progress/summary"
     )
 
-    if response.status_code == 200:
+    if response is not None and response.status_code == 200:
 
         data = response.json()
 
@@ -345,7 +410,7 @@ elif page == "📊 Progress":
             data["total_topics"]
         )
 
-    else:
+    elif response is not None:
         st.error(
             f"Error: {response.text}"
         )
