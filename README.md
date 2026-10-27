@@ -255,6 +255,13 @@ B.Tech in Artificial Intelligence and Data Science
 
 - GitHub: [Priyankagupta355](https://github.com/Priyankagupta355)
 - Project Repository: [AI Personal Study Assistant](https://github.com/Priyankagupta355/AI-Study-Assistant)
+- # 📚 AI Personal Study Assistant
+
+🚀 **[Live Demo](https://ai-study-assistant-fsj2n7h4mygnuwcsu4gm4z.streamlit.app/)** | 💻 **[GitHub Repository](https://github.com/Priyankagupta355/AI-Study-Assistant)**
+
+An AI-powered study companion built using Generative AI, Retrieval-Augmented Generation (RAG), and AI Agents to make learning more interactive and personalized.
+
+An AI-powered study companion built using Generative AI, Retrieval-Augmented Generation (RAG), and AI Agents to make learning more interactive and personalized.]
 
 ---
 
